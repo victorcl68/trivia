@@ -1,3 +1,6 @@
+import { connect } from 'react-redux';
+import { playerData } from '../actions';
+
 const React = require('react');
 const PropTypes = require('prop-types');
 
@@ -41,12 +44,15 @@ class Login extends React.Component {
   }
 
   async playGame() {
-    const { history } = this.props;
+    const { history, sendPlayerData } = this.props;
+    const { name, gravatarEmail } = this.state;
 
     const token = await this.fetchToken();
     localStorage.setItem('token', token);
 
-    history.push('/play');
+    sendPlayerData({ name, gravatarEmail });
+
+    history.push('/game');
   }
 
   goToSettings() {
@@ -107,6 +113,11 @@ class Login extends React.Component {
 
 Login.propTypes = {
   history: PropTypes.shape().isRequired,
+  sendPlayerData: PropTypes.func.isRequired,
 };
 
-export default Login;
+const mapDispatchToProps = (dispatch) => ({
+  sendPlayerData: (state) => dispatch(playerData(state)),
+});
+
+export default connect(null, mapDispatchToProps)(Login);
