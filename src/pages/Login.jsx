@@ -9,6 +9,7 @@ class Login extends React.Component {
     this.checkInputs = this.checkInputs.bind(this);
     this.fetchToken = this.fetchToken.bind(this);
     this.playGame = this.playGame.bind(this);
+    this.goToSettings = this.goToSettings.bind(this);
 
     this.state = {
       isButtonDisabled: true,
@@ -48,6 +49,11 @@ class Login extends React.Component {
     history.push('/play');
   }
 
+  goToSettings() {
+    const { history } = this.props;
+    history.push('/settings');
+  }
+
   render() {
     const { isButtonDisabled } = this.state;
 
@@ -75,7 +81,6 @@ class Login extends React.Component {
             />
           </label>
         </section>
-
         <section>
           <button
             type="button"
@@ -84,6 +89,15 @@ class Login extends React.Component {
             onClick={ this.playGame }
           >
             Jogar
+          </button>
+        </section>
+        <section>
+          <button
+            type="button"
+            data-testid="btn-settings"
+            onClick={ this.goToSettings }
+          >
+            Configurações
           </button>
         </section>
       </main>

@@ -1,10 +1,15 @@
 import React from 'react';
-import { Route } from 'react-router';
-import Login from './pages/Login';
+import { Switch, Route } from 'react-router';
+
 import './App.css';
+import Login from './pages/Login';
+import Settings from './pages/Settings';
 
 export default function App() {
   return (
-    <Route exact path="/" component={ Login } />
+    <Switch>
+      <Route exact path="/" component={ Login } />
+      <Route path="/settings" component={ Settings } />
+    </Switch>
   );
 }
