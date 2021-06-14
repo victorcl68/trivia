@@ -1,4 +1,5 @@
 const React = require('react');
+const PropTypes = require('prop-types');
 
 class Login extends React.Component {
   constructor(props) {
@@ -6,6 +7,8 @@ class Login extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.checkInputs = this.checkInputs.bind(this);
+    this.fetchToken = this.fetchToken.bind(this);
+    this.playGame = this.playGame.bind(this);
 
     this.state = {
       isButtonDisabled: true,
@@ -27,6 +30,22 @@ class Login extends React.Component {
     if (isValid) {
       this.setState({ isButtonDisabled: false });
     }
+  }
+
+  async fetchToken() {
+    const request = await fetch('https://opentdb.com/api_token.php?command=request');
+    const response = await request.json();
+
+    return response.token;
+  }
+
+  async playGame() {
+    const { history } = this.props;
+
+    const token = await this.fetchToken();
+    localStorage.setItem('token', token);
+
+    history.push('/play');
   }
 
   render() {
@@ -58,7 +77,12 @@ class Login extends React.Component {
         </section>
 
         <section>
-          <button type="button" data-testid="btn-play" disabled={ isButtonDisabled }>
+          <button
+            type="button"
+            data-testid="btn-play"
+            disabled={ isButtonDisabled }
+            onClick={ this.playGame }
+          >
             Jogar
           </button>
         </section>
@@ -66,5 +90,9 @@ class Login extends React.Component {
     );
   }
 }
+
+Login.propTypes = {
+  history: PropTypes.shape().isRequired,
+};
 
 export default Login;
