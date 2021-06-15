@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import '../css/Questions.css';
 
+const TIMER = 3;
+
 class Questions extends Component {
   constructor() {
     super();
@@ -11,6 +13,8 @@ class Questions extends Component {
     this.state = {
       index: 0,
       isClicked: false,
+      timer: TIMER,
+      score: 0,
     };
 
     this.onClick = this.onClick.bind(this);
@@ -18,10 +22,19 @@ class Questions extends Component {
     this.setDataTestid = this.setDataTestid.bind(this);
     this.handleAnswers = this.handleAnswers.bind(this);
     this.nextQuestion = this.nextQuestion.bind(this);
+    this.defineInterval = this.defineInterval.bind(this);
+    this.checkInterval = this.checkInterval.bind(this);
+    this.getScore = this.getScore.bind(this);
+    this.multiplier = this.multiplier.bind(this);
   }
 
-  onClick() {
+  componentDidMount() {
+    this.defineInterval();
+  }
+
+  onClick(event) {
     this.setState({ isClicked: true });
+    this.getScore(event);
   }
 
   setClassName(answer) {
@@ -45,6 +58,50 @@ class Questions extends Component {
     return 'correct-answer';
   }
 
+  getScore(event) {
+    const { index, timer, score } = this.state;
+    const { questions } = this.props;
+    const { difficulty } = questions[index];
+    const multiplier = this.multiplier(difficulty);
+    const RIGHT_ANSWER = 10;
+
+    const questionScore = RIGHT_ANSWER + (timer * multiplier);
+    this.setState({ score: score + questionScore });
+  }
+
+  multiplier(difficulty) {
+    const THREE = 3;
+    const TWO = 2;
+    const ONE = 1;
+    switch (difficulty) {
+    case 'hard':
+      return THREE;
+    case 'medium':
+      return TWO;
+    case 'easy':
+      return ONE;
+    default:
+      return ONE;
+    }
+  }
+
+  defineInterval() {
+    const ONE_SECOND = 1000;
+    setInterval(this.checkInterval, ONE_SECOND);
+  }
+
+  checkInterval() {
+    const { timer, isClicked } = this.state;
+
+    if (timer === 0 || isClicked) {
+      this.getScore();
+      this.setState({ isClicked: true });
+      return clearInterval();
+    } else {
+      this.setState({ timer: timer - 1 });
+    }
+  }
+
   nextQuestion() {
     const { index } = this.state;
     const { questions, history } = this.props;
@@ -52,9 +109,10 @@ class Questions extends Component {
       this.setState({
         index: index + 1,
         isClicked: false,
+        timer: TIMER,
       });
     } else {
-      history.push('/teste');
+      history.push('/defineInterval');
     }
   }
 
@@ -73,6 +131,7 @@ class Questions extends Component {
           key={ answer }
           className={ isClicked ? this.setClassName(answer) : null }
           type="button"
+          disabled={ isClicked }
           onClick={ this.onClick }
         >
           { unescape(answer) }
@@ -82,7 +141,7 @@ class Questions extends Component {
   }
 
   render() {
-    const { isClicked, index } = this.state;
+    const { timer, isClicked, index } = this.state;
     const { questions } = this.props;
 
     return (
@@ -107,6 +166,8 @@ class Questions extends Component {
               Próxima
             </button>)
           : null }
+
+        <p>{ timer }</p>
       </div>
     );
   }
