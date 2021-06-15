@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import '../css/Questions.css';
 
-const TIMER = 30;
+const TIMER = 3;
 
 class Questions extends Component {
   constructor() {
@@ -59,7 +59,6 @@ class Questions extends Component {
   }
 
   getScore(event) {
-    console.log(event.target.value);
     const { index, timer, score } = this.state;
     const { questions } = this.props;
     const { difficulty } = questions[index];
@@ -92,12 +91,12 @@ class Questions extends Component {
   }
 
   checkInterval() {
-    const { index, timer, isClicked } = this.state;
-    const { questions } = this.props;
+    const { timer, isClicked } = this.state;
 
     if (timer === 0 || isClicked) {
-      clearInterval(timer);
+      this.getScore();
       this.setState({ isClicked: true });
+      return clearInterval();
     } else {
       this.setState({ timer: timer - 1 });
     }
@@ -132,6 +131,7 @@ class Questions extends Component {
           key={ answer }
           className={ isClicked ? this.setClassName(answer) : null }
           type="button"
+          disabled={ isClicked }
           onClick={ this.onClick }
         >
           { unescape(answer) }
