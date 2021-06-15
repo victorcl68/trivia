@@ -11,16 +11,30 @@ class Questions extends Component {
     };
 
     this.handleAnswers = this.handleAnswers.bind(this);
+    this.setDataTestid = this.setDataTestid.bind(this);
+  }
+
+  setDataTestid(answer) {
+    const { questions } = this.props;
+    const { index } = this.state;
+    const incorrect = questions[index].incorrect_answers;
+    if (incorrect.includes(answer)) {
+      const incorrectIndex = incorrect.indexOf(answer);
+      return `wrong-answer-${incorrectIndex}`;
+    }
+    return 'correct-answer';
   }
 
   handleAnswers() {
     const { index } = this.state;
     const { questions } = this.props;
-    const answers = [questions[index].correct_answer, ...questions[index].incorrect_answers];
+    const answers = [...questions[index].incorrect_answers, questions[index].correct_answer];
     const sortAnswers = answers.sort();
     return (
       sortAnswers.map((answer) => (
         <button
+          data-testid={ this.setDataTestid(answer) }
+
           type="button"
         >
           { unescape(answer) }
@@ -37,7 +51,7 @@ class Questions extends Component {
         <h1
           data-testid="question-category"
         >
-          { questions[0].category }
+          { unescape(questions[0].category) }
 
         </h1>
         <span
