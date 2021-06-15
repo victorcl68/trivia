@@ -28,13 +28,16 @@ class Questions extends Component {
   handleAnswers() {
     const { index } = this.state;
     const { questions } = this.props;
-    const answers = [...questions[index].incorrect_answers, questions[index].correct_answer];
+    const answers = [
+      ...questions[index].incorrect_answers,
+      questions[index].correct_answer,
+    ];
     const sortAnswers = answers.sort();
     return (
       sortAnswers.map((answer) => (
         <button
           data-testid={ this.setDataTestid(answer) }
-
+          key={ answer }
           type="button"
         >
           { unescape(answer) }
@@ -69,5 +72,9 @@ const mapStateToProps = (state) => ({
   questions: state.questions.questions,
 
 });
+
+Questions.propTypes = {
+  questions: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+};
 
 export default connect(mapStateToProps)(Questions);
