@@ -17,6 +17,7 @@ class Questions extends Component {
     this.setClassName = this.setClassName.bind(this);
     this.setDataTestid = this.setDataTestid.bind(this);
     this.handleAnswers = this.handleAnswers.bind(this);
+    this.nextQuestion = this.nextQuestion.bind(this);
   }
 
   onClick() {
@@ -44,6 +45,19 @@ class Questions extends Component {
     return 'correct-answer';
   }
 
+  nextQuestion() {
+    const { index } = this.state;
+    const { questions, history } = this.props;
+    if (index < questions.length - 1) {
+      this.setState({
+        index: index + 1,
+        isClicked: false,
+      });
+    } else {
+      history.push('/teste');
+    }
+  }
+
   handleAnswers() {
     const { index, isClicked } = this.state;
     const { questions } = this.props;
@@ -68,28 +82,30 @@ class Questions extends Component {
   }
 
   render() {
-    const { isClicked } = this.state;
+    const { isClicked, index } = this.state;
     const { questions } = this.props;
 
     return (
 
       <div>
-        <h1
-          data-testid="question-category"
-        >
-          { unescape(questions[0].category) }
-
+        <h1 data-testid="question-category">
+          { unescape(questions[index].category) }
         </h1>
-        <span
-          data-testid="question-text"
-
-        >
-          { unescape(questions[0].question) }
+        <span data-testid="question-text">
+          { unescape(questions[index].question) }
         </span>
+
         {this.handleAnswers()}
 
         { isClicked
-          ? <button type="button">Próximo</button>
+          ? (
+            <button
+              data-testid="btn-next"
+              type="button"
+              onClick={ this.nextQuestion }
+            >
+              Próxima
+            </button>)
           : null }
       </div>
     );
@@ -101,6 +117,7 @@ const mapStateToProps = (state) => ({
 
 Questions.propTypes = {
   questions: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  history: PropTypes.shape().isRequired,
 };
 
 export default connect(mapStateToProps)(Questions);
