@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { playerData } from '../actions';
+import { playerData, questionsData } from '../actions';
 
 const React = require('react');
 const PropTypes = require('prop-types');
@@ -11,6 +11,7 @@ class Login extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.checkInputs = this.checkInputs.bind(this);
     this.fetchToken = this.fetchToken.bind(this);
+    this.fetchQuestion = this.fetchQuestion.bind(this);
     this.playGame = this.playGame.bind(this);
     this.goToSettings = this.goToSettings.bind(this);
 
@@ -43,14 +44,23 @@ class Login extends React.Component {
     return response.token;
   }
 
+  async fetchQuestion(token) {
+    const request = await fetch(`https://opentdb.com/api.php?amount=5&encode=url3986&token=${token}`);
+    const response = await request.json();
+
+    return response.results;
+  }
+
   async playGame() {
-    const { history, sendPlayerData } = this.props;
+    const { history, sendPlayerData, sendQuestionsData } = this.props;
     const { name, gravatarEmail } = this.state;
 
     const token = await this.fetchToken();
     localStorage.setItem('token', token);
+    const questions = await this.fetchQuestion(token);
 
     sendPlayerData({ name, gravatarEmail });
+    sendQuestionsData(questions);
 
     history.push('/game');
   }
@@ -114,10 +124,12 @@ class Login extends React.Component {
 Login.propTypes = {
   history: PropTypes.shape().isRequired,
   sendPlayerData: PropTypes.func.isRequired,
+  sendQuestionsData: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
   sendPlayerData: (state) => dispatch(playerData(state)),
+  sendQuestionsData: (state) => dispatch(questionsData(state)),
 });
 
 export default connect(null, mapDispatchToProps)(Login);
