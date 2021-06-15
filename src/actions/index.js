@@ -3,7 +3,7 @@ export const playerData = (state) => ({
   state,
 });
 
-export const a = (state) => ({
-  type: 'LOGIN',
+export const questionsData = (state) => ({
+  type: 'QUEST',
   state,
 });
