@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import md5 from 'crypto-js/md5';
 import { playerScore } from '../actions';
 
 import '../css/Questions.css';
@@ -29,6 +30,7 @@ class Questions extends Component {
     this.checkInterval = this.checkInterval.bind(this);
     this.getScore = this.getScore.bind(this);
     this.multiplier = this.multiplier.bind(this);
+    this.handleSrc = this.handleSrc.bind(this);
   }
 
   componentDidMount() {
@@ -111,9 +113,17 @@ class Questions extends Component {
     this.setState({ timer: timer - 1 });
   }
 
+  handleSrc() {
+    const { gravatarEmail } = this.props;
+    const hash = md5(gravatarEmail).toString();
+    const gravatarLink = `https://gravatar.com/avatar/${hash}`;
+
+    return gravatarLink;
+  }
+
   nextQuestion() {
     const { index } = this.state;
-    const { questions, history } = this.props;
+    const { questions, history, player } = this.props;
     if (index < questions.length - 1) {
       this.setState({
         index: index + 1,
@@ -121,6 +131,14 @@ class Questions extends Component {
         timer: TIMER,
       });
     } else {
+      const ranking = JSON.parse(localStorage.getItem('ranking'));
+      const newPlayer = {
+        name: player.name,
+        score: player.score,
+        picture: this.handleSrc(),
+      };
+
+      localStorage.setItem('ranking', JSON.stringify([...ranking, newPlayer]));
       history.push('/feedback');
     }
   }
@@ -185,6 +203,7 @@ class Questions extends Component {
 
 const mapStateToProps = (state) => ({
   questions: state.questions.questions,
+  player: state.player,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -195,6 +214,8 @@ Questions.propTypes = {
   questions: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   history: PropTypes.shape().isRequired,
   sendPlayerScore: PropTypes.func.isRequired,
+  gravatarEmail: PropTypes.string.isRequired,
+  player: PropTypes.shape().isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Questions);
