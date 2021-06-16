@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import '../css/Questions.css';
 
-const TIMER = 3;
+const TIMER = 30;
 
 class Questions extends Component {
   constructor() {
@@ -112,7 +112,7 @@ class Questions extends Component {
         timer: TIMER,
       });
     } else {
-      history.push('/defineInterval');
+      history.push('/feedback');
     }
   }
 
