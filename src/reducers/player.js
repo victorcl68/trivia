@@ -1,13 +1,9 @@
-// import { defineState } from 'redux-localstore';
-
-const defaultState = {
+const INITIAL_STATE = {
   name: '',
-  assertions: '',
-  score: '',
+  assertions: 0,
+  score: 0,
   gravatarEmail: '',
 };
-
-const INITIAL_STATE = defaultState;
 
 export default (state = INITIAL_STATE, action) => {
   let player = {

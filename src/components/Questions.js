@@ -121,7 +121,7 @@ class Questions extends Component {
         timer: TIMER,
       });
     } else {
-      history.push('/defineInterval');
+      history.push('/feedback');
     }
   }
 
