@@ -1,10 +1,6 @@
-import { defineState } from 'redux-localstore';
-
-const defaultState = {
+const INITIAL_STATE = {
   questions: [],
 };
-
-const INITIAL_STATE = defineState(defaultState)('questions');
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
