@@ -6,6 +6,7 @@ import { playerScore } from '../actions';
 import '../css/Questions.css';
 
 const TIMER = 30;
+const CORRECT = 'correct-answer';
 
 class Questions extends Component {
   constructor() {
@@ -46,7 +47,7 @@ class Questions extends Component {
     if (incorrect.includes(answer)) {
       return 'wrong-answer';
     }
-    return 'correct-answer';
+    return CORRECT;
   }
 
   setDataTestid(answer) {
@@ -57,11 +58,11 @@ class Questions extends Component {
       const incorrectIndex = incorrect.indexOf(answer);
       return `wrong-answer-${incorrectIndex}`;
     }
-    return 'correct-answer';
+    return CORRECT;
   }
 
   getScore({ target }) {
-    if (target.id === "correct-answer") {
+    if (target.id === CORRECT) {
       const { index, timer, score, assertions } = this.state;
       const { questions, sendPlayerScore } = this.props;
       const { difficulty } = questions[index];
@@ -70,10 +71,12 @@ class Questions extends Component {
       const questionScore = RIGHT_ANSWER + (timer * multiplier);
 
       this.setState({
-        score: score + questionScore, assertions: assertions + 1
-      }, () => sendPlayerScore({ score: this.state.score, assertions: this.state.assertions }));
+        score: score + questionScore, assertions: assertions + 1,
+      }, () => {
+        const { score: newScore, assertions: newAssertion } = this.state;
+        sendPlayerScore({ score: newScore, assertions: newAssertion });
+      });
     }
-
   }
 
   multiplier(difficulty) {
@@ -104,9 +107,8 @@ class Questions extends Component {
       // this.getScore();
       this.setState({ isClicked: true });
       return clearInterval();
-    } else {
-      this.setState({ timer: timer - 1 });
     }
+    this.setState({ timer: timer - 1 });
   }
 
   nextQuestion() {
@@ -192,6 +194,7 @@ const mapDispatchToProps = (dispatch) => ({
 Questions.propTypes = {
   questions: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   history: PropTypes.shape().isRequired,
+  sendPlayerScore: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Questions);
