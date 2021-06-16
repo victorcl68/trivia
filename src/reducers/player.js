@@ -16,6 +16,15 @@ export default (state = INITIAL_STATE, action) => {
       ...state,
       name: action.state.name,
       gravatarEmail: action.state.gravatarEmail,
+      score: 0,
+    };
+  case 'SET_SCORE':
+    localStorage.setItem('score', action.state.score);
+    localStorage.setItem('assertions', action.state.assertions);
+    return {
+      ...state,
+      score: action.state.score,
+      assertions: action.state.assertions,
     };
   default:
     return state;
