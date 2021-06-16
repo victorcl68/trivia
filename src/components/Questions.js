@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { playerScore } from '../actions';
 
 import '../css/Questions.css';
 
-const TIMER = 3;
+const TIMER = 30;
+const CORRECT = 'correct-answer';
 
 class Questions extends Component {
   constructor() {
@@ -15,6 +17,7 @@ class Questions extends Component {
       isClicked: false,
       timer: TIMER,
       score: 0,
+      assertions: 0,
     };
 
     this.onClick = this.onClick.bind(this);
@@ -44,7 +47,7 @@ class Questions extends Component {
     if (incorrect.includes(answer)) {
       return 'wrong-answer';
     }
-    return 'correct-answer';
+    return CORRECT;
   }
 
   setDataTestid(answer) {
@@ -55,18 +58,25 @@ class Questions extends Component {
       const incorrectIndex = incorrect.indexOf(answer);
       return `wrong-answer-${incorrectIndex}`;
     }
-    return 'correct-answer';
+    return CORRECT;
   }
 
-  getScore(event) {
-    const { index, timer, score } = this.state;
-    const { questions } = this.props;
-    const { difficulty } = questions[index];
-    const multiplier = this.multiplier(difficulty);
-    const RIGHT_ANSWER = 10;
+  getScore({ target }) {
+    if (target.id === CORRECT) {
+      const { index, timer, score, assertions } = this.state;
+      const { questions, sendPlayerScore } = this.props;
+      const { difficulty } = questions[index];
+      const multiplier = this.multiplier(difficulty);
+      const RIGHT_ANSWER = 10;
+      const questionScore = RIGHT_ANSWER + (timer * multiplier);
 
-    const questionScore = RIGHT_ANSWER + (timer * multiplier);
-    this.setState({ score: score + questionScore });
+      this.setState({
+        score: score + questionScore, assertions: assertions + 1,
+      }, () => {
+        const { score: newScore, assertions: newAssertion } = this.state;
+        sendPlayerScore({ score: newScore, assertions: newAssertion });
+      });
+    }
   }
 
   multiplier(difficulty) {
@@ -94,12 +104,11 @@ class Questions extends Component {
     const { timer, isClicked } = this.state;
 
     if (timer === 0 || isClicked) {
-      this.getScore();
+      // this.getScore();
       this.setState({ isClicked: true });
       return clearInterval();
-    } else {
-      this.setState({ timer: timer - 1 });
     }
+    this.setState({ timer: timer - 1 });
   }
 
   nextQuestion() {
@@ -127,6 +136,7 @@ class Questions extends Component {
     return (
       sortAnswers.map((answer) => (
         <button
+          id={ this.setClassName(answer) }
           data-testid={ this.setDataTestid(answer) }
           key={ answer }
           className={ isClicked ? this.setClassName(answer) : null }
@@ -172,13 +182,19 @@ class Questions extends Component {
     );
   }
 }
+
 const mapStateToProps = (state) => ({
   questions: state.questions.questions,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  sendPlayerScore: (state) => dispatch(playerScore(state)),
 });
 
 Questions.propTypes = {
   questions: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   history: PropTypes.shape().isRequired,
+  sendPlayerScore: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps)(Questions);
+export default connect(mapStateToProps, mapDispatchToProps)(Questions);
