@@ -58,7 +58,7 @@ class Questions extends Component {
     return 'correct-answer';
   }
 
-  getScore(event) {
+  getScore() {
     const { index, timer, score } = this.state;
     const { questions } = this.props;
     const { difficulty } = questions[index];
@@ -96,7 +96,7 @@ class Questions extends Component {
     if (timer === 0 || isClicked) {
       this.getScore();
       this.setState({ isClicked: true });
-      return clearInterval();
+      clearInterval();
     } else {
       this.setState({ timer: timer - 1 });
     }
