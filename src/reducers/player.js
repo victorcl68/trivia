@@ -6,6 +6,8 @@ const INITIAL_STATE = {
 };
 
 export default (state = INITIAL_STATE, action) => {
+  const localStorageRanking = localStorage.getItem('ranking');
+
   let player = {
     score: 0,
     assertions: 0,
@@ -13,6 +15,10 @@ export default (state = INITIAL_STATE, action) => {
 
   switch (action.type) {
   case 'LOGIN':
+    if (!localStorageRanking) {
+      localStorage.setItem('ranking', JSON.stringify([]));
+    }
+
     localStorage.setItem('state', JSON.stringify({ player }));
     return {
       ...state,
