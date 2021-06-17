@@ -5,13 +5,14 @@ import md5 from 'crypto-js/md5';
 import { playerScore } from '../actions';
 
 import '../css/Questions.css';
+import Button from './Button';
 
 const TIMER = 30;
 const CORRECT = 'correct-answer';
 
 class Questions extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       index: 0,
@@ -21,7 +22,7 @@ class Questions extends Component {
       assertions: 0,
     };
 
-    this.onClick = this.onClick.bind(this);
+    this.answerQuestion = this.answerQuestion.bind(this);
     this.setClassName = this.setClassName.bind(this);
     this.setDataTestid = this.setDataTestid.bind(this);
     this.handleAnswers = this.handleAnswers.bind(this);
@@ -35,21 +36,6 @@ class Questions extends Component {
 
   componentDidMount() {
     this.defineInterval();
-  }
-
-  onClick(event) {
-    this.setState({ isClicked: true });
-    this.getScore(event);
-  }
-
-  setClassName(answer) {
-    const { questions } = this.props;
-    const { index } = this.state;
-    const incorrect = questions[index].incorrect_answers;
-    if (incorrect.includes(answer)) {
-      return 'wrong-answer';
-    }
-    return CORRECT;
   }
 
   setDataTestid(answer) {
@@ -73,12 +59,31 @@ class Questions extends Component {
       const questionScore = RIGHT_ANSWER + (timer * multiplier);
 
       this.setState({
-        score: score + questionScore, assertions: assertions + 1,
+        score: score + questionScore,
+        assertions: assertions + 1,
       }, () => {
         const { score: newScore, assertions: newAssertion } = this.state;
-        sendPlayerScore({ score: newScore, assertions: newAssertion });
+        sendPlayerScore({
+          score: newScore,
+          assertions: newAssertion,
+        });
       });
     }
+  }
+
+  setClassName(answer) {
+    const { questions } = this.props;
+    const { index } = this.state;
+    const incorrect = questions[index].incorrect_answers;
+    if (incorrect.includes(answer)) {
+      return 'wrong-answer';
+    }
+    return CORRECT;
+  }
+
+  answerQuestion(event) {
+    this.setState({ isClicked: true });
+    this.getScore(event);
   }
 
   multiplier(difficulty) {
@@ -106,7 +111,6 @@ class Questions extends Component {
     const { timer, isClicked } = this.state;
 
     if (timer === 0 || isClicked) {
-      // this.getScore();
       this.setState({ isClicked: true });
       return clearInterval();
     }
@@ -153,17 +157,15 @@ class Questions extends Component {
     const sortAnswers = answers.sort();
     return (
       sortAnswers.map((answer) => (
-        <button
+        <Button
           id={ this.setClassName(answer) }
-          data-testid={ this.setDataTestid(answer) }
-          key={ answer }
+          test={ this.setDataTestid(answer) }
+          value={ unescape(answer) }
           className={ isClicked ? this.setClassName(answer) : null }
-          type="button"
-          disabled={ isClicked }
-          onClick={ this.onClick }
-        >
-          { unescape(answer) }
-        </button>
+          disableButton={ isClicked }
+          clickable={ this.answerQuestion }
+          key={ unescape(answer) }
+        />
       ))
     );
   }
@@ -186,13 +188,11 @@ class Questions extends Component {
 
         { isClicked
           ? (
-            <button
-              data-testid="btn-next"
-              type="button"
-              onClick={ this.nextQuestion }
-            >
-              Próxima
-            </button>)
+            <Button
+              test="btn-next"
+              clickable={ this.nextQuestion }
+              value="Próxima"
+            />)
           : null }
 
         <p>{ timer }</p>

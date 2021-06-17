@@ -1,3 +1,4 @@
+import Button from '../components/Button';
 import RankingList from '../components/RankingList';
 
 const PropTypes = require('prop-types');
@@ -11,13 +12,11 @@ class Ranking extends React.Component {
       <>
         <h1 data-testid="ranking-title">Ranking</h1>
         <RankingList />
-        <button
-          type="button"
-          data-testid="btn-go-home"
-          onClick={ () => history.push('/') }
-        >
-          Jogar Novamente
-        </button>
+        <Button
+          test="btn-go-home"
+          clickable={ () => history.push('/') }
+          value="Jogar Novamente"
+        />
       </>
     );
   }

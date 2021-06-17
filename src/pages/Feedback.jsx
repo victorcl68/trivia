@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Button from '../components/Button';
 import Header from '../components/Header';
 
 const React = require('react');
 
 class Feedback extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.feedbackText = this.feedbackText.bind(this);
   }
@@ -31,20 +32,16 @@ class Feedback extends React.Component {
         <h1 data-testid="feedback-text">{ this.feedbackText() }</h1>
         <h2 data-testid="feedback-total-score">{ score }</h2>
         <h2 data-testid="feedback-total-question">{ assertions }</h2>
-        <button
-          type="button"
-          data-testid="btn-play-again"
-          onClick={ () => history.push('/') }
-        >
-          Jogar Novamente
-        </button>
-        <button
-          type="button"
-          data-testid="btn-ranking"
-          onClick={ () => history.push('/ranking') }
-        >
-          Ver Ranking
-        </button>
+        <Button
+          test="btn-play-again"
+          clickable={ () => history.push('/') }
+          value="Jogar Novamente"
+        />
+        <Button
+          test="btn-ranking"
+          clickable={ () => history.push('/ranking') }
+          value="Ver Ranking"
+        />
       </>
     );
   }

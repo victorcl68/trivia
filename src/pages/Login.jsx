@@ -1,5 +1,7 @@
 import { connect } from 'react-redux';
 import { playerData, questionsData } from '../actions';
+import Button from '../components/Button';
+import Input from '../components/Input';
 
 const React = require('react');
 const PropTypes = require('prop-types');
@@ -13,7 +15,6 @@ class Login extends React.Component {
     this.fetchToken = this.fetchToken.bind(this);
     this.fetchQuestion = this.fetchQuestion.bind(this);
     this.playGame = this.playGame.bind(this);
-    this.goToSettings = this.goToSettings.bind(this);
 
     this.state = {
       isButtonDisabled: true,
@@ -65,56 +66,40 @@ class Login extends React.Component {
     history.push('/game');
   }
 
-  goToSettings() {
-    const { history } = this.props;
-    history.push('/settings');
-  }
-
   render() {
     const { isButtonDisabled } = this.state;
+    const { history } = this.props;
 
     return (
       <main>
         <section>
-          <label htmlFor="name">
-            Nome
-            <input
-              type="text"
-              name="name"
-              data-testid="input-player-name"
-              id="name"
-              onChange={ this.handleChange }
-            />
-          </label>
-          <label htmlFor="gravatarEmail">
-            Email
-            <input
-              type="email"
-              name="gravatarEmail"
-              id="gravatarEmail"
-              data-testid="input-gravatar-email"
-              onChange={ this.handleChange }
-            />
-          </label>
+          <Input
+            test="input-player-name"
+            onChange={ this.handleChange }
+            label="Nome"
+            id="name"
+            type="text"
+          />
+          <Input
+            test="input-gravatar-email"
+            onChange={ this.handleChange }
+            label="Email"
+            id="gravatarEmail"
+            type="email"
+          />
         </section>
         <section>
-          <button
-            type="button"
-            data-testid="btn-play"
-            disabled={ isButtonDisabled }
-            onClick={ this.playGame }
-          >
-            Jogar
-          </button>
-        </section>
-        <section>
-          <button
-            type="button"
-            data-testid="btn-settings"
-            onClick={ this.goToSettings }
-          >
-            Configurações
-          </button>
+          <Button
+            test="btn-play"
+            disableButton={ isButtonDisabled }
+            clickable={ this.playGame }
+            value="Jogar"
+          />
+          <Button
+            test="btn-settings"
+            clickable={ () => history.push('/settings') }
+            value="Configurações"
+          />
         </section>
       </main>
     );
