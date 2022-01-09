@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { playerData, questionsData } from '../actions';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import '../styles/Login.css';
 
 const React = require('react');
 const PropTypes = require('prop-types');
@@ -87,19 +88,17 @@ class Login extends React.Component {
             id="gravatarEmail"
             type="email"
           />
-        </section>
-        <section>
           <Button
             test="btn-play"
             disableButton={ isButtonDisabled }
             clickable={ this.playGame }
             value="Jogar"
           />
-          <Button
+          {/* <Button
             test="btn-settings"
             clickable={ () => history.push('/settings') }
             value="Configurações"
-          />
+          /> */}
         </section>
       </main>
     );

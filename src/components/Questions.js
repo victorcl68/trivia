@@ -177,12 +177,13 @@ class Questions extends Component {
     return (
 
       <div>
-        <h1 data-testid="question-category">
+        <h3 data-testid="question-category">
           { unescape(questions[index].category) }
-        </h1>
+        </h3>
         <span data-testid="question-text">
           { unescape(questions[index].question) }
         </span>
+        <br/>
 
         {this.handleAnswers()}
 

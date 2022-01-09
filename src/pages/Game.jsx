@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import '../styles/Game.css';
 
 import Header from '../components/Header';
 import Questions from '../components/Questions';

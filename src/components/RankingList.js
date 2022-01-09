@@ -30,8 +30,10 @@ class RankingList extends React.Component {
       <ol>
         { ranking.map((player, index) => (
           <li key={ index }>
-            <h1 data-testid={ `player-name-${index}` }>{ player.name }</h1>
-            <h1 data-testid={ `player-score-${index}` }>{ player.score }</h1>
+            <span data-testid={ `player-name-${index}` }>{ player.name }</span>
+            -
+            <span data-testid={ `player-score-${index}` }>{ player.score }</span>
+            <br/>
             <img alt={ `player-name-${player.name}` } src={ player.picture } />
           </li>
         )) }

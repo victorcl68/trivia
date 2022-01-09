@@ -29,9 +29,9 @@ class Feedback extends React.Component {
     return (
       <>
         <Header />
-        <h1 data-testid="feedback-text">{ this.feedbackText() }</h1>
-        <h2 data-testid="feedback-total-score">{ score }</h2>
-        <h2 data-testid="feedback-total-question">{ assertions }</h2>
+        <h3 data-testid="feedback-text">{ this.feedbackText() }</h3>
+        <h4 data-testid="feedback-total-score">{ score }</h4>
+        <h4 data-testid="feedback-total-question">{ assertions }</h4>
         <Button
           test="btn-play-again"
           clickable={ () => history.push('/') }
